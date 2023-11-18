@@ -76,7 +76,18 @@
 import {AxiosResponse} from "axios";
 import logService from "@/services/log.service";
 import socketService from "@/services/socket.service";
-
+interface Log {
+  level: string;
+  message: string;
+  resourceID: string;
+  timestamp: Date;
+  traceID: string;
+  spanID: string;
+  commit: string;
+  metadata: {
+    parentResourceId: string;
+  };
+}
 export default {
   data() {
     return {
@@ -88,7 +99,7 @@ export default {
       searchRules: [
         // Todo-> validation here
       ],
-      logs: [],
+      logs: [] as Log[] ,
       pagination: {
         currentPage: 1,
         totalPages: 1,
@@ -110,14 +121,14 @@ export default {
       this.pagination.currentPage = response.data.currentPage
       this.pagination.totalPages = response.data.totalPages
     },
-    handleLogCreated(data) {
+    handleLogCreated(data:any) {
       // Either call the API again or handle New incoming data
       // this.logs.unshift(data);
       this.fetchData()
       // this.$forceUpdate()
     },
-    async handleSearch(data) {
-      const { valid } = await this.$refs.searchForm.validate()
+    async handleSearch(data:any) {
+      const {valid} = (this.$refs['searchForm'] as any).validate();
       this.fetchData()
     }
   },
