@@ -1,11 +1,13 @@
-import {io, Socket} from 'socket.io-client';
+import {io} from 'socket.io-client';
 
-class SocketIoService{
+class SocketIoService {
   public socket: any;
-  constructor() {
+
+  constructor() {}
+
+  makeConnection() {
+    this.socket = io(import.meta.env.VITE_BASE_URL)
   }
-  makeConnection(){
-    this.socket = io('http://localhost:3000')}
 
   disconnect() {
     if (this.socket) {

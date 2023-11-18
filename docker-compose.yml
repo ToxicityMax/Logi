@@ -1,0 +1,36 @@
+version: "3.7"
+
+services:
+  logi-api:
+    build:
+      context: backend
+    ports:
+      - '127.0.0.1:3000:3000'
+    environment:
+      DB_URI: 'mongodb://mongodb:27017/ingestor'
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+
+  logi-ui:
+    build:
+      context: web
+    ports:
+      - '127.0.0.1:3001:3001'
+    environment:
+      # Backend URL
+      # Set this to a publically accessible url, 
+      # eg. https://dyte-logi-api.kunwar.dev
+      VITE_BASE_URL: 'https://dyte-logi-api.kunwar.dev'
+
+  redis:
+    image: redis:6.2-alpine
+    restart: always
+    command: redis-server --save 20 1 --loglevel warning
+    volumes: 
+      - ./.docker_data/redis:/bitnami/redis/data
+
+  mongodb:
+    image: mongo:latest
+    restart: always
+    volumes:
+      - ./.docker_data/mongodb:/data/db
