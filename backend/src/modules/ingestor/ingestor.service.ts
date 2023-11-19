@@ -77,7 +77,7 @@ export class IngestorService {
     const filter = {};
     if (!searchQuery) return filter;
     try {
-      const rawQueryList = searchQuery.trim().split(' ');
+      const rawQueryList = this.parseQuery(searchQuery);
       const queryList = rawQueryList.map((rawQuery) => {
         const query = rawQuery.split(':');
         return {
@@ -130,5 +130,33 @@ export class IngestorService {
         $lte: new Date(endDate),
       };
     return filter;
+  }
+  parseQuery(searchQuery) {
+    const parts = [];
+    let withinQuotes = false;
+    let currentPart = '';
+
+    for (let i = 0; i < searchQuery.length; i++) {
+      const char = searchQuery[i];
+
+      if (char === "'") {
+        withinQuotes = !withinQuotes;
+      }
+
+      if (char === ' ' && !withinQuotes) {
+        parts.push(currentPart);
+        currentPart = '';
+      } else {
+        currentPart += char;
+      }
+    }
+
+    if (currentPart !== '') {
+      parts.push(currentPart);
+    }
+
+    const queryObj = {};
+
+    return parts;
   }
 }

@@ -7,6 +7,7 @@
         <v-col cols="7">
           <div class="font-weight-light text-h5 mb-2">Search</div>
           <v-text-field v-model="filters.searchText"
+                        persistent-hint
                         hint="Ex: level:error,success fts:'Error in DB' spanID:r'<regex>' commit:*123 resourceID:abd* metadata.foo:bar"
                         single-line bg-color="#2B2B2B" solo flat border="4" clearable variant="solo"
                         :rules="searchRules" hide-details="auto" name="Search"
