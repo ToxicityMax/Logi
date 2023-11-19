@@ -241,9 +241,9 @@ foo1.foo2:bar
 ```
 
 * Filtering logs by date
+  * Use dashboard datetime input fields
 
-<p>Use dashboard datetime input fields</p>
-
+#### Example Usage
 _Create your Lquery syntax and append each of them in space seperated strings_
 Example:
 
@@ -251,7 +251,7 @@ Example:
 level:error,success fts:'Error in DB' spanID:r'<regex>' commit:*123 resourceID:abd* metadata.foo:bar
 ```
 
-## Current Issues
+## Known Issues
 
 1. Lquery fails when there are multiple spaces between two queries. Ex: <pre> ```"level:success     foo:bar"```</pre>
 2. Frontend sends API twice sometimes
