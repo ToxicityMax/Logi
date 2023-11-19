@@ -43,6 +43,23 @@ Live at <a href="https://dyte-logi.kunwar.dev/"> https://dyte-logi.kunwar.dev/</
 * __Enhanced Search__: Supports intricate searches using regular expressions and various functions.
 * __Optimized Data__ Retrieval: Allows precise extraction of relevant information for quicker analysis.
 
+## Built With
+
+### Deployed With
+- [Docker](https://www.docker.com/): Platform for containerization and deployment.
+
+### Backend Technologies
+- [NestJS](https://nestjs.com/): Backend framework for building scalable applications.
+- [Bull (Node.js)](https://github.com/OptimalBits/bull): Redis-backed queue library for Node.js.
+- [Redis](https://redis.io/): In-memory data structure store used as a database, cache, and message broker.
+- [MongoDB](https://www.mongodb.com/): NoSQL database for flexible, scalable data storage.
+- WebSockets
+- TypeScript
+
+### Frontend Technologies
+- [Vue.js](https://vuejs.org/): Progressive JavaScript framework for building user interfaces.
+- [Vuetify](https://vuetifyjs.com/): Material Design component library for Vue.js.
+- [Socket.io](https://socket.io/): Real-time bidirectional event-based communication library.
 
 
 ## Installation
@@ -173,24 +190,6 @@ level:error,success fts:'Error in DB' spanID:r'<regex>' commit:*123 resourceID:a
 
 1. Lquery fails when there are multiple spaces between two queries. Ex: <pre> ```"level:success     foo:bar"```</pre>
 2. Frontend sends API twice sometimes
-
-## Built With
-
-### Deployed With
-- [Docker](https://www.docker.com/): Platform for containerization and deployment.
-
-### Backend Technologies
-- [NestJS](https://nestjs.com/): Backend framework for building scalable applications.
-- [Bull (Node.js)](https://github.com/OptimalBits/bull): Redis-backed queue library for Node.js.
-- [Redis](https://redis.io/): In-memory data structure store used as a database, cache, and message broker.
-- [MongoDB](https://www.mongodb.com/): NoSQL database for flexible, scalable data storage.
-- WebSockets
-- TypeScript
-
-### Frontend Technologies
-- [Vue.js](https://vuejs.org/): Progressive JavaScript framework for building user interfaces.
-- [Vuetify](https://vuetifyjs.com/): Material Design component library for Vue.js.
-- [Socket.io](https://socket.io/): Real-time bidirectional event-based communication library.
 
 ## Contact
 
