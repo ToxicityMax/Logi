@@ -4,8 +4,10 @@
     <!-- Search Box -->
     <v-form ref="searchForm" v-on:submit.prevent="handleSearch">
       <v-row class="my-4">
-        <v-col cols="7">
-          <div class="font-weight-light text-h5 mb-2">Search</div>
+        <v-col cols="12">
+          <div class="font-weight-light text-h5">Search</div>
+        </v-col>
+        <v-col md="7" cols="12">
           <v-text-field v-model="filters.searchText"
                         persistent-hint
                         hint="Ex: level:error,success fts:'Error in DB' spanID:r'<regex>' commit:*123 resourceID:abd* metadata.foo:bar"
@@ -13,18 +15,18 @@
                         :rules="searchRules" hide-details="auto" name="Search"
           ></v-text-field>
         </v-col>
-        <v-col class="mt-10" cols="2">
+        <v-col md="2" cols="12">
           <v-text-field v-model="filters.startDate" type="datetime-local" label="Start Date"
                         bg-color="#2B2B2B" solo clearable variant="solo"
                         hide-details="auto" name="Search"></v-text-field>
         </v-col>
-        <v-col class="mt-10" cols="2">
+        <v-col md="2" cols="12">
           <v-text-field v-model="filters.endDate" type="datetime-local" label="End Date"
                         bg-color="#2B2B2B" solo clearable variant="solo"
                         hide-details="auto" name="Search"></v-text-field>
         </v-col>
-        <v-col class="mt-11" cols="1">
-          <v-btn class="together" color="#ffcaaf" icon="mdi-magnify" rounded="0" type="submit"
+        <v-col md="1" cols="12">
+          <v-btn class="together mt-1" color="#ffcaaf" width="100%" icon="mdi-magnify" rounded="0" type="submit"
                  @click="handleSearch"></v-btn>
         </v-col>
       </v-row>
@@ -77,6 +79,7 @@
 import {AxiosResponse} from "axios";
 import logService from "@/services/log.service";
 import socketService from "@/services/socket.service";
+
 interface Log {
   level: string;
   message: string;
@@ -89,6 +92,7 @@ interface Log {
     parentResourceId: string;
   };
 }
+
 export default {
   data() {
     return {
@@ -100,7 +104,7 @@ export default {
       searchRules: [
         // Todo-> validation here
       ],
-      logs: [] as Log[] ,
+      logs: [] as Log[],
       pagination: {
         currentPage: 1,
         totalPages: 1,
@@ -122,13 +126,13 @@ export default {
       this.pagination.currentPage = response.data.currentPage
       this.pagination.totalPages = response.data.totalPages
     },
-    handleLogCreated(data:any) {
+    handleLogCreated(data: any) {
       // Either call the API again or handle New incoming data
       this.logs.unshift(data);
       // this.fetchData()
       this.$forceUpdate()
     },
-    async handleSearch(data:any) {
+    async handleSearch(data: any) {
       const {valid} = (this.$refs['searchForm'] as any).validate();
       this.fetchData()
     }

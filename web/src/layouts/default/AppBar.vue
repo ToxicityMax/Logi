@@ -1,17 +1,10 @@
 <template>
   <v-app-bar app color="primary">
-
-    <v-row>
-      <v-col
-        cols="auto"
-        class="me-auto"
-      >
-        <v-app-bar-title class="pl-16 ml-3">
+        <v-app-bar-title>
           <v-icon icon="mdi-view-dashboard"/>
           LOGI: Log Ingestor and Dashboard
         </v-app-bar-title>
-      </v-col>
-      <v-col cols="auto">
+      <template v-slot:append>
         <v-dialog
           v-model="dialogBulk"
           persistent
@@ -71,8 +64,6 @@
           </v-form>
 
         </v-dialog>
-      </v-col>
-      <v-col class="pr-16 mr-2" cols="auto">
         <v-dialog
           v-model="dialogFile"
           id="fileInput"
@@ -130,21 +121,7 @@
           </v-form>
 
         </v-dialog>
-
-      </v-col>
-    </v-row>
-    <!--    <v-row justify="end" no-gutters >-->
-    <!--      <v-col>-->
-    <!--        <v-app-bar-title>-->
-    <!--          <v-icon icon="mdi-view-dashboard"/>-->
-    <!--          LOGI: Log Ingestor and Dashboard-->
-    <!--        </v-app-bar-title>-->
-    <!--      </v-col>-->
-    <!--      <v-col>-->
-    <!--        <v-btn text="Ingest Logs"></v-btn>-->
-    <!--      </v-col>-->
-    <!--    </v-row>-->
-
+      </template>
   </v-app-bar>
 </template>
 
