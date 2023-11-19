@@ -10,12 +10,16 @@ const apiClient = axios.create({
 });
 export default {
   search(filter: any, page: number, limit: number) {
-    return apiClient.post("/ingestor/search", {filters: filter? filter:{}, page: page, limit: limit});
+    return apiClient.post("/ingestor/search", {filters: filter ? filter : {}, page: page, limit: limit});
   },
-  ingestDataWithFile(file: any){
-    return apiClient.postForm("/ingestor/file",file )
+  ingestDataWithFile(fileData: any) {
+    return apiClient.postForm("/ingestor/json-file", fileData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
   },
-  ingestDataBulk(logs:any){
+  ingestDataBulk(logs: any) {
     return apiClient.post('/ingestor/bulk', logs)
   }
 };

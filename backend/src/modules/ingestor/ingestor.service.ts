@@ -6,6 +6,8 @@ import { LogDocument } from './ingestor.entity';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import { Log } from './ingestor.interface';
+import { plainToClass } from 'class-transformer';
+import { validate } from 'class-validator';
 
 @Injectable()
 export class IngestorService {
@@ -25,10 +27,20 @@ export class IngestorService {
   }
 
   async addJsonFileLogs(file: Express.Multer.File) {
-    console.log(file);
-    const logsData: LogDTO[] = [];
-    //todo
-    //parsing file and after parsing
+    const data = file.buffer.toString();
+    const parsedData = JSON.parse(data);
+    const logsData: LogDTO[] = parsedData.map((item: any) =>
+      plainToClass(LogDTO, item),
+    );
+    for (const log of logsData) {
+      const error = await validate(log); // Validate each log
+      if (error.length > 0) {
+        throw new HttpException(
+          'Validation error file content not as expected',
+          400,
+        );
+      }
+    }
     await this.addBulkLogs(logsData);
   }
 
@@ -43,7 +55,6 @@ export class IngestorService {
       searchData.startDate,
       searchData.endDate,
     );
-    console.log(qFilters);
     // Search Db with filters and paginations
     const results: Log[] = await this.logDB
       .find(qFilters)

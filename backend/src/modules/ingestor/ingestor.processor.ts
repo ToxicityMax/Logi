@@ -33,7 +33,6 @@ export class LogProcessor {
     const logData = job.data;
     try {
       const logsToInsert = logData.map((data) => new this.logDB(data));
-
       await this.logDB.insertMany(logsToInsert);
       //Todo-> handle this to support multiple logs and send it to websocket
       this.eventEmitter.emit('log.created', logsToInsert);
