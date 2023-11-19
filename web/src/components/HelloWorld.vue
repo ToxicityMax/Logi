@@ -124,9 +124,9 @@ export default {
     },
     handleLogCreated(data:any) {
       // Either call the API again or handle New incoming data
-      // this.logs.unshift(data);
-      this.fetchData()
-      // this.$forceUpdate()
+      this.logs.unshift(data);
+      // this.fetchData()
+      this.$forceUpdate()
     },
     async handleSearch(data:any) {
       const {valid} = (this.$refs['searchForm'] as any).validate();

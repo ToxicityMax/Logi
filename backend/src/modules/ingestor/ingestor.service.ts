@@ -51,6 +51,7 @@ export class IngestorService {
       searchData.startDate,
       searchData.endDate,
     );
+    // console.log(qFilters);
     // Search Db with filters and paginations
     const results: Log[] = await this.logDB
       .find(qFilters)
@@ -70,53 +71,57 @@ export class IngestorService {
 
   createSearchFilter(searchQuery: string, startDate?, endDate?) {
     // Parse and handle query syntax
+
     const filter = {};
-    if (!searchQuery) return filter;
-    try {
-      const rawQueryList = this.parseQuery(searchQuery);
-      const queryList = rawQueryList.map((rawQuery) => {
-        const query = rawQuery.split(':');
-        return {
-          key: query[0].replace(/^'(.*)'$/, '$1'),
-          val: query[1].replace(/^'(.*)'$/, '$1'),
-        };
-      });
-      queryList.forEach((query) => {
-        // Cases
-        // Full text search Keyword
-        if (query.key == 'fts') {
-          filter['$text'] = { $search: query.val };
-        }
-        // r'' for regular expression'
-        else if (
-          query.val.slice(0, 2) == "r'" &&
-          query.val[query.val.length - 1] == "'"
-        ) {
-          filter[query.key] = {
-            $regex: new RegExp(query.val.slice(2, query.val.length - 1)),
+    if (searchQuery) {
+      try {
+        const rawQueryList = this.parseQuery(searchQuery);
+        const queryList = rawQueryList.map((rawQuery) => {
+          const query = rawQuery.split(':');
+          return {
+            key: query[0].replace(/^'(.*)'$/, '$1'),
+            val: query[1].replace(/^'(.*)'$/, '$1'),
           };
-        }
-        // multiple filters. Ex: level:error,success,warnd
-        else if (query.val.includes(',')) {
-          filter[query.key] = { $in: query.val.split(',') };
-        }
-        // Starts with search. Ex: level:*err
-        else if (query.val[0] == '*') {
-          filter[query.key] = {
-            $regex: new RegExp('^' + query.val.slice(1, query.val.length)),
-          };
-        }
-        // Starts with search. Ex: level:err*
-        else if (query.val[query.val.length - 1] == '*') {
-          filter[query.key] = {
-            $regex: new RegExp(query.val.slice(0, query.val.length - 1) + '$'),
-          };
-        }
-        //Normal query
-        else filter[query.key] = query.val;
-      });
-    } catch (e) {
-      throw new HttpException('Failed to parse query', 400);
+        });
+        queryList.forEach((query) => {
+          // Cases
+          // Full text search Keyword
+          if (query.key == 'fts') {
+            filter['$text'] = { $search: query.val };
+          }
+          // r'' for regular expression'
+          else if (
+            query.val.slice(0, 2) == "r'" &&
+            query.val[query.val.length - 1] == "'"
+          ) {
+            filter[query.key] = {
+              $regex: new RegExp(query.val.slice(2, query.val.length - 1)),
+            };
+          }
+          // multiple filters. Ex: level:error,success,warnd
+          else if (query.val.includes(',')) {
+            filter[query.key] = { $in: query.val.split(',') };
+          }
+          // Starts with search. Ex: level:*err
+          else if (query.val[0] == '*') {
+            filter[query.key] = {
+              $regex: new RegExp('^' + query.val.slice(1, query.val.length)),
+            };
+          }
+          // Starts with search. Ex: level:err*
+          else if (query.val[query.val.length - 1] == '*') {
+            filter[query.key] = {
+              $regex: new RegExp(
+                query.val.slice(0, query.val.length - 1) + '$',
+              ),
+            };
+          }
+          //Normal query
+          else filter[query.key] = query.val;
+        });
+      } catch (e) {
+        throw new HttpException('Failed to parse query', 400);
+      }
     }
 
     // Create timestamp filters
