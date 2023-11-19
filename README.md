@@ -188,7 +188,7 @@ Send Json file which contains __list of logs__ with multipart form with the fiel
 
 #### Frontend running on port 3001
 
-* Seamless UI
+* Seamless UI which adjusts to any screen size across all devices.
 * Live updates when adding new logs.
 * Search box to write Lquery and datetime buttons for lookup between timestamps
 * Paginated Searches
@@ -241,7 +241,7 @@ foo1.foo2:bar
 ```
 
 * Filtering logs by date
-  * Use dashboard datetime input fields
+  * Use dashboard datetime input fields ![](./images/datetime.png)
 
 #### Example Usage
 _Create your Lquery syntax and append each of them in space seperated strings_
