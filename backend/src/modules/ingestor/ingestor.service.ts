@@ -22,25 +22,21 @@ export class IngestorService {
   }
 
   async addBulkLogs(logsData: LogDTO[]) {
-    await this.logsQueue.add('handleBulkLogs', logsData);
+    const data = await this.validateJsonLogs(logsData);
+    await this.logsQueue.add('handleBulkLogs', data);
     throw new HttpException('Success', 201);
   }
 
   async addJsonFileLogs(file: Express.Multer.File) {
     const data = file.buffer.toString();
-    const parsedData = JSON.parse(data);
-    const logsData: LogDTO[] = parsedData.map((item: any) =>
-      plainToClass(LogDTO, item),
-    );
-    for (const log of logsData) {
-      const error = await validate(log); // Validate each log
-      if (error.length > 0) {
-        throw new HttpException(
-          'Validation error file content not as expected',
-          400,
-        );
-      }
+    let parsedData = [];
+    try {
+      parsedData = JSON.parse(data);
+    } catch (e) {
+      throw new HttpException(e, 400);
     }
+
+    const logsData = await this.validateJsonLogs(parsedData);
     await this.addBulkLogs(logsData);
   }
 
@@ -154,9 +150,21 @@ export class IngestorService {
     if (currentPart !== '') {
       parts.push(currentPart);
     }
-
-    const queryObj = {};
-
     return parts;
+  }
+  async validateJsonLogs(data) {
+    const logsData: LogDTO[] = data.map((item: any) =>
+      plainToClass(LogDTO, item),
+    );
+    for (const log of logsData) {
+      const error = await validate(log); // Validate each log
+      if (error.length > 0) {
+        throw new HttpException(
+          'Validation error. Content not as expected',
+          400,
+        );
+      }
+    }
+    return logsData;
   }
 }

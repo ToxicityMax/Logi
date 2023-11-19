@@ -24,7 +24,7 @@
           <v-form ref="submitForm" @submit.prevent="submitBulk">
             <v-card>
               <v-card-title class="pt-5 ml-7">
-                <div class="text-h6">Ingest Logs with JSON text</div>
+                <div class="text-h6">Ingest Logs with JSON Array</div>
               </v-card-title>
               <v-card-text>
                 <v-container>
@@ -58,6 +58,14 @@
                 >
                   Save
                 </v-btn>
+                <v-snackbar
+                  :timeout="3000"
+                  v-model="snackBarBulk"
+                  color="#ffcaaf"
+                  elevation="24"
+                >
+                  {{ snackbarMessageBulk }}
+                </v-snackbar>
               </v-card-actions>
             </v-card>
           </v-form>
@@ -92,6 +100,14 @@
 
                 </v-container>
               </v-card-text>
+              <v-snackbar
+                :timeout="3000"
+                v-model="snackBarFile"
+                color="#ffcaaf"
+                elevation="24"
+              >
+                {{ snackbarMessageFile }}
+              </v-snackbar>
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn
@@ -114,6 +130,7 @@
           </v-form>
 
         </v-dialog>
+
       </v-col>
     </v-row>
     <!--    <v-row justify="end" no-gutters >-->
@@ -131,7 +148,7 @@
   </v-app-bar>
 </template>
 
-<script >
+<script>
 import logService from "@/services/log.service";
 
 export default {
@@ -141,12 +158,17 @@ export default {
       dialogFile: false,
       jsonLogs: "",
       logFile: null,
+      snackBarBulk: false,
+      snackbarMessageBulk: '',
+      snackBarFile: false,
+      snackbarMessageFile: '',
       textRule: [
         value => {
           try {
-            JSON.parse(value)
+            if (!Array.isArray(JSON.parse(value)))
+              return "JSON Parse error. Should be a JSON array of logs"
           } catch (e) {
-            return "JSON Parse error"
+            return "JSON Parse error. Should be a JSON array of logs"
           }
           return true
         },
@@ -160,19 +182,42 @@ export default {
       } catch (e) {
         // raise Error
       }
-      const response = await logService.ingestDataBulk(JSON.parse(this.jsonLogs))
+
+      const response = await logService.ingestDataBulk(JSON.parse(this.jsonLogs)).catch((error) => {
+        this.snackbarMessageBulk = error.response.data.message
+        this.snackBarBulk = true
+        setTimeout(() => {
+          this.dialogBulk = false
+        }, 3000)
+      })
+
       // Success message
-      this.dialogBulk = false
+      this.snackbarMessageBulk = response.data.message
+      this.snackBarBulk = true
+      setTimeout(() => {
+        this.dialogBulk = false
+      }, 3000)
     },
-    async submitFile(e) {
+    async submitFile() {
       // const fileInput = document.getElementById('fileInput');
-      const form =  new FormData()
+      const form = new FormData()
       form.append("file", this.file)
-      const response = await logService.ingestDataWithFile(form)
+      const response = await logService.ingestDataWithFile(form).catch((error) => {
+        this.snackbarMessageFile = error.response.data.message
+        this.snackBarFile = true
+        setTimeout(() => {
+          this.dialogFile = false
+        }, 3000)
+      })
+
       // Success message
-      this.dialogBulk = false
+      this.snackbarMessageFile = response.data.message
+      this.snackBarFile = true
+      setTimeout(() => {
+        this.dialogFile = false
+      }, 3000)
     },
-    handleFileUpload(e){
+    handleFileUpload(e) {
       this.file = e.target.files[0];
     }
   }
